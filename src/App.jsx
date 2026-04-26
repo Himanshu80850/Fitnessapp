@@ -1,127 +1,73 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
-const workoutData = {
-  en: {
-    greeting: "Hi, Himanshu!",
-    rings: "Activity Rings",
-    title: "Daily Workouts",
-    yoga: "Morning Yoga",
-    cardio: "Intense Cardio",
-    start: "Start Now",
-    changeLang: "हिंदी"
+// --- Styles ---
+const styles = {
+  container: { backgroundColor: '#000', color: '#fff', minHeight: '100vh', padding: '40px 20px', fontFamily: 'Inter, sans-serif' },
+  progress: { height: '4px', backgroundColor: '#333', borderRadius: '2px', marginBottom: '40px' },
+  activeProgress: { height: '100%', backgroundColor: '#fa114f', transition: 'width 0.3s ease' },
+  title: { fontSize: '32px', fontWeight: '800', marginBottom: '10px' },
+  subtitle: { color: '#8e8e93', fontSize: '16px', marginBottom: '30px' },
+  optionCard: {
+    backgroundColor: '#1C1C1E', padding: '20px', borderRadius: '16px', marginBottom: '15px',
+    border: '1px solid #333', display: 'flex', justifyContent: 'space-between', cursor: 'pointer'
   },
-  hi: {
-    greeting: "नमस्ते, हिमांशु!",
-    rings: "एक्टिविटी रिंग्स",
-    title: "आज की कसरत",
-    yoga: "सुबह का योग",
-    cardio: "तेज़ कार्डियो",
-    start: "अभी शुरू करें",
-    changeLang: "English"
+  selectedCard: { borderColor: '#fa114f', backgroundColor: '#2c1219' },
+  nextBtn: {
+    backgroundColor: '#fa114f', color: '#fff', width: '100%', padding: '18px',
+    borderRadius: '16px', border: 'none', fontWeight: 'bold', fontSize: '18px', marginTop: '20px'
   }
 };
 
-function App() {
-  const [lang, setLang] = useState('hi');
-  const t = workoutData[lang];
+const Onboarding = () => {
+  const [step, setStep] = useState(1);
+  const [formData, setFormData] = useState({ goal: '', focus: '', level: '' });
+
+  const steps = [
+    { id: 1, title: "आपका लक्ष्य क्या है?", sub: "हम इसे आपके हिसाब से ढालेंगे", field: 'goal', options: ['वजन घटाना', 'मांसपेशियां बनाना', 'फिट रहना'] },
+    { id: 2, title: "किस हिस्से पर ध्यान दें?", sub: "विज़ुअलाइज़ेशन (Arms, Legs, Abs)", field: 'focus', options: ['पूरी बॉडी', 'सिर्फ आर्म्स', 'एब्स और कोर'] },
+    { id: 3, title: "आपका लेवल क्या है?", sub: "शुरुआत या प्रो?", field: 'level', options: ['Beginner', 'Intermediate', 'Advanced'] }
+  ];
+
+  const currentStep = steps[step - 1];
+
+  const next = () => step < 3 ? setStep(step + 1) : alert("तैयार! अब आपका प्लान बन रहा है...");
 
   return (
     <div style={styles.container}>
-      {/* Top Header */}
-      <div style={styles.header}>
-        <h2 style={styles.greeting}>{t.greeting}</h2>
-        <button onClick={() => setLang(lang === 'en' ? 'hi' : 'en')} style={styles.langBtn}>
-          {t.changeLang}
-        </button>
+      {/* Progress Bar */}
+      <div style={styles.progress}>
+        <div style={{ ...styles.activeProgress, width: `${(step / 3) * 100}%` }}></div>
       </div>
 
-      {/* Progress Ring Card */}
-      <div style={styles.ringsCard}>
-        <div style={styles.ringText}>
-          <p style={{margin: 0, opacity: 0.8}}>{t.rings}</p>
-          <h1 style={{margin: '5px 0'}}>85%</h1>
-        </div>
-        <div style={styles.ringCircle}></div>
-      </div>
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={step}
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -20 }}
+        >
+          <h1 style={styles.title}>{currentStep.title}</h1>
+          <p style={styles.subtitle}>{currentStep.sub}</p>
 
-      <h3 style={{margin: '20px 0 10px'}}>{t.title}</h3>
+          {currentStep.options.map(opt => (
+            <div 
+              key={opt}
+              onClick={() => setFormData({ ...formData, [currentStep.field]: opt })}
+              style={{ ...styles.optionCard, ...(formData[currentStep.field] === opt ? styles.selectedCard : {}) }}
+            >
+              <span>{opt}</span>
+              {formData[currentStep.field] === opt && <span style={{color: '#fa114f'}}>✓</span>}
+            </div>
+          ))}
 
-      {/* Workout Card 1 */}
-      <div style={styles.card}>
-        <div style={{flex: 1}}>
-          <h4 style={{margin: '0 0 5px'}}>{t.yoga}</h4>
-          <p style={{fontSize: '14px', color: '#8e8e93'}}>15 Mins • Beginner</p>
-        </div>
-        <button style={styles.playBtn}>{t.start}</button>
-      </div>
-
-      {/* Workout Card 2 */}
-      <div style={styles.card}>
-        <div style={{flex: 1}}>
-          <h4 style={{margin: '0 0 5px'}}>{t.cardio}</h4>
-          <p style={{fontSize: '14px', color: '#8e8e93'}}>20 Mins • Pro</p>
-        </div>
-        <button style={styles.playBtn}>{t.start}</button>
-      </div>
+          <button style={styles.nextBtn} onClick={next}>
+            {step === 3 ? "फिनिश" : "अगला"}
+          </button>
+        </motion.div>
+      </AnimatePresence>
     </div>
   );
-}
-
-const styles = {
-  container: {
-    padding: '20px',
-    backgroundColor: '#000',
-    color: '#fff',
-    minHeight: '100vh',
-    fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif'
-  },
-  header: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: '20px'
-  },
-  greeting: { fontSize: '24px', fontWeight: 'bold' },
-  langBtn: {
-    backgroundColor: '#333',
-    color: '#007AFF',
-    border: 'none',
-    padding: '8px 15px',
-    borderRadius: '20px',
-    fontWeight: 'bold'
-  },
-  ringsCard: {
-    backgroundColor: '#1C1C1E',
-    padding: '20px',
-    borderRadius: '20px',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    borderLeft: '4px solid #fa114f'
-  },
-  ringCircle: {
-    width: '50px',
-    height: '50px',
-    borderRadius: '50%',
-    border: '5px solid #fa114f',
-    borderTopColor: '#333'
-  },
-  card: {
-    backgroundColor: '#1C1C1E',
-    padding: '15px',
-    borderRadius: '15px',
-    display: 'flex',
-    alignItems: 'center',
-    marginBottom: '10px'
-  },
-  playBtn: {
-    backgroundColor: '#007AFF',
-    color: 'white',
-    border: 'none',
-    padding: '10px 15px',
-    borderRadius: '12px',
-    fontWeight: 'bold'
-  }
 };
 
-export default App;
+export default Onboarding;
