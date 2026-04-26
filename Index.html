@@ -1,39 +1,34 @@
-import React, { useState } from 'react';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <title>Fitness App</title>
 
-const content = {
-  en: { title: "Daily Workouts", yoga: "Morning Yoga", start: "Start" },
-  hi: { title: "दैनिक कसरत", yoga: "सुबह का योग", start: "शुरू करें" }
-};
+    <link rel="manifest" href="/manifest.json">
 
-function App() {
-  const [lang, setLang] = useState('en');
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#000000">
 
-  return (
-    <div style={styles.container}>
-      <header style={styles.header}>
-        <h1>{content[lang].title}</h1>
-        <button onClick={() => setLang(lang === 'en' ? 'hi' : 'en')} style={styles.langBtn}>
-          {lang === 'en' ? 'हिंदी' : 'EN'}
-        </button>
-      </header>
+    <style>
+        /* बेसिक लोडिंग स्टाइल ताकि स्क्रीन एकदम खाली न लगे */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000000;
+            color: white;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            overflow: hidden; /* स्क्रॉल बार छुपाने के लिए */
+        }
+    </style>
+</head>
+<body>
 
-      <div style={styles.card}>
-        <div>
-          <h3>{content[lang].yoga}</h3>
-          <p>15 Mins • Beginner</p>
-        </div>
-        <button style={styles.playBtn}>{content[lang].start}</button>
-      </div>
-    </div>
-  );
-}
+    <div id="root"></div>
 
-const styles = {
-  container: { padding: '20px', backgroundColor: '#121212', color: 'white', minHeight: '100vh' },
-  header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
-  card: { backgroundColor: '#1e1e1e', padding: '20px', borderRadius: '15px', marginTop: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
-  langBtn: { background: 'none', color: '#007AFF', border: '1px solid #007AFF', padding: '5px 10px', borderRadius: '5px' },
-  playBtn: { backgroundColor: '#007AFF', color: 'white', border: 'none', padding: '10px 20px', borderRadius: '10px', fontWeight: 'bold' }
-};
+    <script type="module" src="/src/main.jsx"></script>
 
-export default App;
+</body>
+</html>
